@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { json } from "react-router-dom";
+
 import { toast } from "react-toastify";
 
 const initialState = {
@@ -69,14 +69,14 @@ const cartSlice = createSlice({
       }
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
-    clearCart(state, action) {
+    clearCart(state) {
       state.cartItems = [];
       toast.error(`Cart cleared`, {
         position: "bottom-left",
       });
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
-    getTotals(state, action) {
+    getTotals(state) {
       let { total, quantity } = state.cartItems.reduce(
         (cartTotal, cartItem) => {
           const { price, cartQuantity } = cartItem;

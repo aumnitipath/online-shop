@@ -1,8 +1,10 @@
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 const NavBar = () => {
   const { cartTotalQuantity } = useSelector((state) => state.cart);
+  const auth = useSelector((state) => state.auth);
   return (
     <>
       <nav className="nav-bar">
@@ -26,9 +28,30 @@ const NavBar = () => {
             </span>
           </div>
         </Link>
+        {auth._id ? (
+          <Logout>Logout</Logout>
+        ) : (
+          <AuthLinks>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </AuthLinks>
+        )}
       </nav>
     </>
   );
 };
 
 export default NavBar;
+
+const AuthLinks = styled.div`
+  a {
+    &:last-child {
+      margin-left: 2rem;
+    }
+  }
+`;
+
+const Logout = styled.div`
+  color: white;
+  cursor: pointer;
+`;

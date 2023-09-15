@@ -1,12 +1,18 @@
 import { addToCart } from "../features/cartSlice";
 import { useNavigate } from "react-router";
 import { useGetAllProductsQuery } from "../features/productsAPI";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
-  const { data, error, isLoading } = useGetAllProductsQuery();
+  const { items: products, status } = useSelector((state) => state.products);
+  const auth = useSelector((state) => state.auth);
+
+  console.log(auth);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { data, error, isLoading } = useGetAllProductsQuery();
 
   const handleAddToCart = (product) => {
     dispatch(addToCart(product));
@@ -15,29 +21,30 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p>An error occured.... </p>
-      ) : (
+      {status === "success" ? (
         <>
           <h2>New Arrivals</h2>
           <div className="products">
-            {data?.map((product) => (
-              <div key={product.id} className="product">
-                <h3>{product.name}</h3>
-                <img src={product.image} alt={product.name} />
-                <div className="details">
-                  <span>{product.desc}</span>
-                  <span className="price">${product.price}</span>
+            {data &&
+              data?.map((product) => (
+                <div key={product.id} className="product">
+                  <h3>{product.name}</h3>
+                  <img src={product.image} alt={product.name} />
+                  <div className="details">
+                    <span>{product.desc}</span>
+                    <span className="price">${product.price}</span>
+                  </div>
+                  <button onClick={() => handleAddToCart(product)}>
+                    Add To Cart
+                  </button>
                 </div>
-                <button onClick={() => handleAddToCart(product)}>
-                  Add To Cart
-                </button>
-              </div>
-            ))}
+              ))}
           </div>
         </>
+      ) : status === "pending" ? (
+        <p>Loading...</p>
+      ) : (
+        <p>Unexpected error occured...</p>
       )}
     </div>
   );
